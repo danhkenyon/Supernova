@@ -1,0 +1,39 @@
+teleportenabled: true
+teleportauto: false
+godmode: false
+flymode: false
+muted: false
+jailed: false
+ip-address: 127.0.0.1
+afk: false
+socialspy: false
+npc: false
+powertoolsenabled: true
+accepting-pay: true
+baltop-exempt: false
+timestamps:
+  lastteleport: 1793737100244
+  lastheal: 0
+  mute: 0
+  jail: 0
+  onlinejail: 0
+  logout: 1793752147974
+  login: 1793752106532
+money: '0'
+last-account-name: dankenyon
+lastlocation:
+  world: 0093eff2-e561-4c9e-b53e-91b1347a99e6
+  world-name: world
+  x: 121.16941267042091
+  y: 165.0
+  z: 85.37564784620126
+  yaw: 178.30062866210938
+  pitch: 53.54972457885742
+logoutlocation:
+  world: 0093eff2-e561-4c9e-b53e-91b1347a99e6
+  world-name: world
+  x: 121.89876968442319
+  y: 165.0
+  z: 83.46426990295234
+  yaw: 159.9947967529297
+  pitch: 53.40064239501953

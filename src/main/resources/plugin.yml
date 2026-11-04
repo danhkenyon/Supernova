@@ -1,0 +1,12 @@
+name: Supernova
+description: $description
+prefix: Nexus
+version: '${version}'
+
+main: net.minepact.supernova.Main
+bootstrapper: net.minepact.supernova.SupernovaBootstrap
+api-version: '26.2'
+load: STARTUP
+
+authors: [ danhkenyon ]
+website: https://nexus.net/

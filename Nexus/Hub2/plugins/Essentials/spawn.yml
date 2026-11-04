@@ -1,0 +1,19 @@
+spawns:
+  '0':
+    5 50 0:
+      '5':
+        world: 2f89e46c-622b-4e5a-830a-fdba3f12d58d
+        world-name: spawn
+        x: 0.5
+        y: 50.0
+        z: 0.5
+        yaw: -1.5195865631103516
+        pitch: 6.449756145477295
+  default:
+    world: 2f89e46c-622b-4e5a-830a-fdba3f12d58d
+    world-name: spawn
+    x: 0.5
+    y: 50.0
+    z: 0.5
+    yaw: 0.021020453423261642
+    pitch: 0.005209231749176979

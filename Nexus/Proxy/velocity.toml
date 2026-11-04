@@ -1,0 +1,82 @@
+config-version = "2.9"
+bind = "0.0.0.0:25565"
+motd = "<#09add3>A Velocity Server"
+show-max-players = 500
+online-mode = true
+force-key-authentication = true
+
+prevent-client-proxy-connections = false
+
+# - "none":        No forwarding will be done. All players will appear to be connecting from the proxy and will have offline-mode UUIDs.
+# - "legacy":      Forward player IPs and UUIDs in a BungeeCord-compatible format. Use this if you run servers using Minecraft 1.12 or lower.
+# - "bungeeguard": Forward player IPs and UUIDs in a format supported by the BungeeGuard plugin. Use this if you run servers using Minecraft 1.12 or lower, and are unable to implement network level firewalling (on a shared host).
+# - "modern":      Forward player IPs and UUIDs as part of the login process using Velocity's native forwarding. Only applicable for Minecraft 1.13 or higher.
+player-info-forwarding-mode = "MODERN"
+
+
+forwarding-secret-file = "forwarding.secret"
+announce-forge = false
+kick-existing-players = false
+
+sample-players-in-ping = false
+
+enable-player-address-logging = true
+
+[ping-passthrough]
+version = false
+players = false
+description = false
+favicon = false
+modinfo = false
+
+[packet-limiter]
+interval = 7
+packets-per-second = -1
+bytes-per-second = -1
+decompressed-bytes-per-second = 5242880
+
+[servers]
+hub1 = "127.0.0.1:25566"
+hub2 = "127.0.0.1:25567"
+minigames = "127.0.0.1:30068"
+
+try = [
+    "hub1"
+]
+
+[forced-hosts]
+"example.com" = [
+    "hub1"
+]
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 3000
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+
+announce-proxy-commands = true
+log-command-executions = true
+log-player-connections = true
+accepts-transfers = false
+
+enable-reuse-port = false
+command-rate-limit = 50
+forward-commands-if-rate-limited = true
+kick-after-rate-limited-commands = 0
+tab-complete-rate-limit = 10
+kick-after-rate-limited-tab-completes = 0
+
+[query]
+enabled = false
+port = 25565
+map = "Velocity"
+show-plugins = false
