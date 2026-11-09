@@ -19,4 +19,4 @@ libraries/
 cache/
 logs/
 versions/
-sesion.lock
+session.lock
