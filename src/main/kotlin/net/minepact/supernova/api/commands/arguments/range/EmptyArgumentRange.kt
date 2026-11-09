@@ -1,4 +1,4 @@
-package net.minepact.supernova.api.commands.arguments
+package net.minepact.supernova.api.commands.arguments.range
 
 class EmptyArgumentRange(
     override val min: Number = 0,

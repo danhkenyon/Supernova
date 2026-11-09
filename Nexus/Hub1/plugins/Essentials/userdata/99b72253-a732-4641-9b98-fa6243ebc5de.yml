@@ -17,8 +17,8 @@ timestamps:
   mute: 0
   jail: 0
   onlinejail: 0
-  logout: 1793752147974
-  login: 1793752106532
+  logout: 1793919405310
+  login: 1793918756779
 money: '0'
 last-account-name: dankenyon
 lastlocation:
@@ -32,8 +32,8 @@ lastlocation:
 logoutlocation:
   world: 0093eff2-e561-4c9e-b53e-91b1347a99e6
   world-name: world
-  x: 121.89876968442319
-  y: 165.0
-  z: 83.46426990295234
-  yaw: 159.9947967529297
-  pitch: 53.40064239501953
+  x: 126.10852645935904
+  y: 173.92029508057863
+  z: 86.29299347788144
+  yaw: 145.2926025390625
+  pitch: 1.800614595413208

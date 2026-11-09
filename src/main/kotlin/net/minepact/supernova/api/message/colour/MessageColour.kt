@@ -19,7 +19,7 @@ data class MessageColour(
             require(value.matches(Regex("[0-9a-fA-F]{6}"))) { "Invalid RGB colour: $hex" }
 
             return MessageColour(
-                value.substring(0, 2).toInt(16),
+                value.take(2).toInt(16),
                 value.substring(2, 4).toInt(16),
                 value.substring(4, 6).toInt(16)
             )

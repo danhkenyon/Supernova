@@ -10,6 +10,9 @@ repositories {
 
 dependencies {
     paperweight.paperDevBundle("26.2.build.+")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    implementation("org.yaml:snakeyaml:2.5")
 }
 
 kotlin {
@@ -32,7 +35,7 @@ tasks {
 
         archiveFileName.set("Supernova.jar")
         destinationDirectory.set(
-            file("C:\\Users\\danhk\\Desktop\\servers\\Nexus\\Hub1\\plugins")
+            file("Nexus\\Hub1\\plugins")
         )
 
         isPreserveFileTimestamps = false

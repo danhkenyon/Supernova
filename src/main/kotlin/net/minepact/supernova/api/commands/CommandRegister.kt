@@ -1,30 +1,33 @@
 package net.minepact.supernova.api.commands
 
-import net.minepact.api.command.Result
 import net.minepact.supernova.Main
 import net.minepact.supernova.api.commands.arguments.Argument
-import net.minepact.supernova.api.commands.arguments.parseArgument
+import net.minepact.supernova.api.commands.arguments.ArgumentContext
+import net.minepact.supernova.api.commands.arguments.ArgumentParser
+import net.minepact.supernova.api.commands.arguments.CommandArguments
 import net.minepact.supernova.api.logger.LogType
 import net.minepact.supernova.api.logger.Logger
+import net.minepact.supernova.api.message.MessageBuilder
+import net.minepact.supernova.api.message.helpers.Messages.ERROR_PREFIX
+import net.minepact.supernova.api.message.sendMessage
+import net.minepact.supernova.api.server.ServerType
 import org.bukkit.Bukkit
-import org.bukkit.command.Command as BukkitCommand
 import org.bukkit.command.CommandMap
 import org.bukkit.command.CommandSender
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
-
-import kotlin.*
-import kotlin.collections.*
-import kotlin.sequences.*
-import kotlin.text.*
-import kotlin.jvm.javaClass
-import java.util.UUID
+import java.util.*
+import kotlin.math.ceil
+import org.bukkit.command.Command as BukkitCommand
 
 class CommandRegister {
+    private val COMMAND_PREFIX: String = "nexus"
     private val COMMANDS: MutableList<Command> = mutableListOf()
-    private val RAN_COMMANDS: MutableMap<CommandSender, MutableMap<Command, Long>> = mutableMapOf()
+    private val RAN_COMMANDS: MutableMap<UUID, MutableMap<Command, Long>> = mutableMapOf()
+    private val REGISTERED_COMMANDS: MutableMap<Command, BukkitCommand> = mutableMapOf()
 
     fun register(command: Command) {
+        if (command in COMMANDS) return
+
         val bukkitCommand = object : BukkitCommand(
             command.name,
             command.description,
@@ -36,75 +39,115 @@ class CommandRegister {
                 label: String,
                 args: Array<String>
             ): Boolean {
-                /*
-                if ((sender is Player && sender.player?.hasPermission(command.permission.node) == true) && !sender.hasPermission("nexus.command.bypass") && !sender.isOp && sender !is ConsoleCommandSender) {
-                    sender.sendMessage("<red>You do not have permission to execute this command.")
+                if (
+                    !sender.hasPermission(command.permission.node) &&
+                    !sender.hasPermission("nexus.command.bypass") &&
+                    !sender.isOp
+                ) {
+                    sender.sendMessage(
+                        MessageBuilder()
+                            .append("<red>You do not have permission to execute this command.")
+                            .build()
+                    )
                     return true
                 }
-
                 if (command.playerOnly && sender !is Player) {
-                    sender.sendMessage("<red>This command can only be used by players.")
+                    sender.sendMessage(
+                        MessageBuilder().append("<red>This command can only be used by players.").build()
+                    )
                     return true
                 }
-                 */
 
-                val parsedArgs = mutableListOf<Argument<*>>()
+                val parsedArgs = mutableMapOf<String, Argument<*>>()
                 for (index in args.indices) {
-                    val expectedArguments = command.usage.arguments
-
-                    if (expectedArguments.isEmpty()) {
-                        sender.sendMessage("<red>Invalid arguments. Usage: ${command.usage}")
+                    val expected = command.usage.arguments.getOrNull(index)
+                    if (expected == null) {
+                        sender.sendMessage(
+                            MessageBuilder().append("<red>Too many arguments. Usage: ${command.usage}").build()
+                        )
                         return true
                     }
-                    val parsed = expectedArguments
-                        .filter { expected -> expected.permission?.let(sender::hasPermission) ?: true }
-                        .filter { expected -> expected.senderFilter?.invoke(sender) ?: true }
-                        .firstNotNullOfOrNull { expected -> parseArgument(args[index], expected) }
+
+                    if (expected.permission?.let(sender::hasPermission) == false) {
+                        sender.sendMessage(
+                            MessageBuilder().append("<red>You do not have permission to use this argument.").build()
+                        )
+                        return true
+                    }
+                    if (expected.senderFilter?.invoke(sender) == false) {
+                        sender.sendMessage(MessageBuilder().append("<red>You cannot use this argument.").build())
+                        return true
+                    }
+
+                    val parsed = ArgumentParser.parse(args[index], expected, ArgumentContext(sender, parsedArgs))
                     if (parsed == null) {
-                        sender.sendMessage("<red>Invalid arguments. Usage: ${command.usage}")
+                        sender.sendMessage(
+                            MessageBuilder().append("<red>Invalid argument. Usage: ${command.usage}").build()
+                        )
                         return true
                     }
 
-                    parsedArgs.add(parsed)
+                    parsedArgs[parsed.name] = parsed
                 }
                 val missingRequired = command.usage.arguments
                     .drop(parsedArgs.size)
                     .any { !it.optional }
 
                 if (missingRequired) {
-                    sender.sendMessage("<red>Invalid arguments. Usage: ${command.usage}")
+                    sender.sendMessage(
+                        MessageBuilder().append("<red>Invalid arguments. Usage: ${command.usage}").build()
+                    )
                     return true
                 }
 
                 return try {
-                    if (RAN_COMMANDS.contains(sender) && RAN_COMMANDS[sender]!!.contains(command)) {
-                        val lastRan = RAN_COMMANDS[sender]!![command]!!
-                        val cooldownMillis = (1 /* PLACEHOLDER COOLDOWN TODO */ * 1000).toLong()
-                        if ((System.currentTimeMillis() - lastRan < cooldownMillis) && !sender.hasPermission("nexus.cooldown.bypass")) {
-                            val timeLeft: Double = ((cooldownMillis - (System.currentTimeMillis() - lastRan)) / 1000.0)
-                            sender.sendMessage("<red>You must wait $timeLeft seconds before using this command again.")
-                            return true
-                        }
+                    val now = System.currentTimeMillis()
+                    val lastRan = RAN_COMMANDS[(sender as? Player)?.uniqueId ?: UUID(0, 0)]?.get(command)
+
+                    if (lastRan != null && now - lastRan < command.cooldown * 1000L && !sender.hasPermission("nexus.cooldown.bypass")) {
+                        val timeLeft = ceil((command.cooldown - (now - lastRan)) / 1000.0).toLong()
+                        sender.sendMessage(
+                            MessageBuilder().append("<red>You must wait $timeLeft seconds before using this command again.")
+                                .build()
+                        )
+                        return true
                     }
 
-                    // RAN_COMMANDS[sender] set RAN_COMMANDS.getOrDefault(sender, mutableMapOf())
-                    //     .also { it[command] set System.currentTimeMillis() }
+                    when (command.execute(sender, CommandArguments(parsedArgs.values))) {
+                        CommandResult.SUCCESS -> {
+                            RAN_COMMANDS.getOrPut(
+                                (sender as? Player)?.uniqueId ?: UUID(
+                                    0,
+                                    0
+                                )
+                            ) { mutableMapOf() }[command] = now
+                            true
+                        }
 
-                    /*
-                    sender.asPlayer().writeLog(LogInfo(
-                        serverId = Main.SERVER.info.uuid,
-                        senderId = (sender as? Player)?.uniqueId ?: UUID(0, 0),
-                        type = LogType.COMMAND,
-                        timestamp = System.currentTimeMillis(),
-                        content = "/${command.name} ${parsedArgs.joinToString(" ") { it.value.toString() }}",
-                        suspicious = command.log
-                    ))
-                     */
+                        CommandResult.FAILURE -> {
+                            Logger.log(
+                                "Command /${command.name} ${parsedArgs.values.joinToString(separator = " ")} failed to execute.",
+                                LogType.WARN
+                            )
+                            Logger.log("Please locate the error and attempt to fix.", LogType.WARN)
+                            true
+                        }
 
-                    command.execute(sender, parsedArgs) == Result.SUCCESS
+                        CommandResult.NO_PERMISSION -> {
+                            sender.sendMessage(
+                                ERROR_PREFIX.append("<red>You do not have permission to run this command.").build()
+                            )
+                            true
+                        }
+                    }
                 } catch (e: Exception) {
+                    Logger.log(
+                        "An exception occurred while executing /${command.name}: ${e.message}",
+                        LogType.ERROR
+                    )
+
                     e.printStackTrace()
-                    false
+                    true
                 }
             }
 
@@ -113,6 +156,12 @@ class CommandRegister {
                 alias: String,
                 args: Array<String>
             ): MutableList<String> {
+                if (
+                    !sender.hasPermission(command.permission.node) &&
+                    !sender.hasPermission("nexus.command.bypass") &&
+                    !sender.isOp
+                ) return mutableListOf()
+
                 val index = args.size - 1
                 val current = args.lastOrNull()?.lowercase() ?: ""
                 val expected = command.usage.arguments.getOrNull(index) ?: return mutableListOf()
@@ -133,28 +182,29 @@ class CommandRegister {
             }
         }
 
-        // if (command.server == Main.SERVER.info.type || command.server == ServerType.GLOBAL) {
-            this.getCommandMap().register(Main.instance.name.lowercase(), bukkitCommand)
+        if (command.server == Main.serverInfo.type || command.server == ServerType.GLOBAL) {
+            this.getCommandMap().register(COMMAND_PREFIX, bukkitCommand)
             COMMANDS.add(command)
-            Logger.log("[CommandRegister] Registered ${command.javaClass.name}")
-        // }
+            Logger.log("[CommandRegister] Registered ${command.javaClass.simpleName}")
+        }
     }
     fun unregister(command: Command) {
-        this.getCommandMap().knownCommands.remove("${Main.instance.name.lowercase()}:${command.name}")
-        this.getCommandMap().knownCommands.remove(command.name)
+        val bukkitCommand = REGISTERED_COMMANDS.remove(command) ?: return
+        getCommandMap().knownCommands.entries.removeIf { it.value === bukkitCommand }
 
         COMMANDS.remove(command)
-        Main.instance.logger.info("[CommandRegister] Unregistered ${command.javaClass.name}!")
+        Logger.log("[CommandRegister] Unregistered ${command.javaClass.name}")
     }
     fun unregister(name: String) {
-        this.getCommandMap().knownCommands.remove("${Main.instance.name.lowercase()}:${name}")
-        this.getCommandMap().knownCommands.remove(name)
-
-        Main.instance.logger.info("[CommandRegister] Unregistered ${COMMANDS.first { it.name == name }.javaClass.name}!")
-        COMMANDS.forEach { if (it.name == name) COMMANDS.remove(it) }
+        val command = COMMANDS.firstOrNull { it.name.equals(name, ignoreCase = true) } ?: return
+        unregister(command)
     }
 
-    fun all(): List<Command> = COMMANDS
+    fun unregisterAll() {
+        COMMANDS.forEach { unregister(it) }
+    }
+
+    fun all(): List<Command> = COMMANDS.toList()
     fun allNames(): List<String> = COMMANDS.map { it.name }
 
     fun getCommandMap(): CommandMap {

@@ -1,8 +1,9 @@
-package net.minepact.supernova.api.commands.arguments
+package net.minepact.supernova.api.commands.arguments.types
 
 import org.bukkit.GameMode
 
 enum class ArgumentInputType {
+    ANY,
     INTEGER,
     STRING,
     BOOLEAN,
@@ -14,6 +15,7 @@ enum class ArgumentInputType {
 
     fun parse(input: String): Any? = try {
         when (this) {
+            ANY -> input
             STRING -> input
             INTEGER -> input.toInt()
             DOUBLE -> input.toDouble()
@@ -24,8 +26,11 @@ enum class ArgumentInputType {
                 input.equals("false", true) -> false
                 else -> null
             }
+
             PLAYER -> input // TODO
             GAME_MODE -> GameMode.valueOf(input.uppercase())
         }
-    } catch (e: Exception) { null }
+    } catch (e: Exception) {
+        null
+    }
 }

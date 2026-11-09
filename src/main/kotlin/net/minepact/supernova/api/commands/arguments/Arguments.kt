@@ -1,17 +1,18 @@
 package net.minepact.supernova.api.commands.arguments
 
-import net.minepact.api.command.Provider
+import net.minepact.supernova.api.commands.arguments.types.composite.PlayerArgumentType
+import org.bukkit.entity.Player
 
 object Arguments {
-    val PLAYERS_REQUIRED: ExpectedArgument = ExpectedArgument(
+    val PLAYERS_REQUIRED: ExpectedArgument<Player> = ExpectedArgument(
         name = "players",
-        inputType = ArgumentInputType.PLAYER,
+        type = PlayerArgumentType,
         dynamicProvider = Provider.PLAYERS,
         optional = false,
     )
-    val PLAYERS_OPTIONAL: ExpectedArgument = ExpectedArgument(
+    val PLAYERS_OPTIONAL: ExpectedArgument<Player> = ExpectedArgument(
         name = "players",
-        inputType = ArgumentInputType.PLAYER,
+        type = PlayerArgumentType,
         dynamicProvider = Provider.PLAYERS,
         optional = true,
     )

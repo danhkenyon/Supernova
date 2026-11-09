@@ -14,8 +14,8 @@ regions:
         min: {x: 0, y: -49, z: 0}
         max: {x: 229, y: 319, z: 173}
         members: {}
-        flags: {exit: deny, chorus-fruit-teleport: deny, build: deny, fall-damage: deny,
-            invincible: allow, exit-via-teleport: deny, pvp: deny}
+        flags: { exit: deny, chorus-fruit-teleport: deny, build: deny, invincible: allow,
+                 fall-damage: deny, pvp: deny, exit-via-teleport: deny, mob-spawning: deny }
         owners: {}
         type: cuboid
         priority: 0

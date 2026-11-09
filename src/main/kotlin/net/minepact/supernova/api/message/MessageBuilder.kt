@@ -1,11 +1,8 @@
 package net.minepact.supernova.api.message
 
-import net.kyori.adventure.text.Component
-import net.minepact.supernova.api.message.action.MessageAction
 import net.minepact.supernova.api.message.parser.MessageParser
 
 class MessageBuilder {
-
     private val segments = mutableListOf<MessageSegment>()
 
     fun append(
@@ -22,12 +19,14 @@ class MessageBuilder {
 
         return this
     }
-
     fun append(message: Message): MessageBuilder {
         segments.addAll(message.segments)
         return this
     }
 
-    fun build(): Message =
-        Message(segments.toList())
+    fun build(): Message = Message(segments.toList())
+
+    fun copy(): MessageBuilder {
+        return MessageBuilder().append(this.build())
+    }
 }

@@ -13,3 +13,9 @@ out/
 hs_err_pid*
 
 run
+
+.paper/
+libraries/
+cache/
+logs/
+versions/
