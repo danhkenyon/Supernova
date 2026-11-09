@@ -4,8 +4,8 @@ godmode: false
 flymode: false
 muted: false
 jailed: false
-ip-address: 127.0.0.1
-afk: false
+ip-address: 192.168.0.103
+afk: true
 socialspy: false
 npc: false
 powertoolsenabled: true
@@ -17,8 +17,8 @@ timestamps:
   mute: 0
   jail: 0
   onlinejail: 0
-  logout: 1793919405310
-  login: 1793918756779
+  logout: 1794252705516
+  login: 1794252735042
 money: '0'
 last-account-name: dankenyon
 lastlocation:

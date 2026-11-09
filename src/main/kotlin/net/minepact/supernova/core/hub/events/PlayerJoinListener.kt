@@ -14,7 +14,6 @@ class PlayerJoinListener : EventListener {
         val player = event.player
         val inventory = player.inventory
 
-        ItemStack.of(Material.COMPASS, 1)
         inventory.setItem(4, ItemStack.of(Material.COMPASS, 1))
     }
 }

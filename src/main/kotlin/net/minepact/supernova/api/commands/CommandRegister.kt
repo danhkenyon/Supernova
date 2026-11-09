@@ -172,7 +172,7 @@ class CommandRegister {
                     .flatMap { arg ->
                         when {
                             arg.dynamicProvider != null -> arg.dynamicProvider.invoke(sender).asSequence()
-                            arg.potentialValues != null -> arg.potentialValues?.asSequence() ?: emptySequence()
+                            arg.potentialValues != null -> arg.potentialValues.asSequence()
                             else -> emptySequence()
                         }
                     }

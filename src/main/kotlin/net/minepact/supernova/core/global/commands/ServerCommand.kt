@@ -6,11 +6,14 @@ import net.minepact.supernova.api.commands.CommandUsage
 import net.minepact.supernova.api.commands.arguments.CommandArguments
 import net.minepact.supernova.api.commands.arguments.ExpectedArgument
 import net.minepact.supernova.api.commands.arguments.types.primative.StringArgumentType
+import net.minepact.supernova.api.menus.MenuManager
 import net.minepact.supernova.api.message.MessageBuilder
 import net.minepact.supernova.api.message.action.Action
 import net.minepact.supernova.api.message.sendMessage
 import net.minepact.supernova.api.permissions.Permission
+import net.minepact.supernova.core.hub.menus.ExampleMenu
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 class ServerCommand : Command(
     name = "server",
@@ -30,6 +33,7 @@ class ServerCommand : Command(
 
 ) {
     override fun execute(sender: CommandSender, args: CommandArguments): CommandResult {
+        /*
         sender.sendMessage(
             MessageBuilder()
                 .append("\n<g:#000000:#ffffff><bold>---------------------------------------------</g>\n")
@@ -44,6 +48,13 @@ class ServerCommand : Command(
                 }
                 .append("<g:#000000:#ffffff><bold>---------------------------------------------</g>\n")
                 .build()
+        )
+
+         */
+
+        MenuManager.open(
+            sender as? Player ?: throw IllegalArgumentException("Player is not an instance of server command."),
+            menu = ExampleMenu()
         )
         return CommandResult.SUCCESS
     }
