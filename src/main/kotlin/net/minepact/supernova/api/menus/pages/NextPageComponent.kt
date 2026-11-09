@@ -6,6 +6,7 @@ import org.bukkit.Material
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
+@Suppress("DEPRECATION")
 class NextPageComponent(
     override val slot: Int
 ) : MenuComponent {

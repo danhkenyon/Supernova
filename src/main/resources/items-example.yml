@@ -1,0 +1,19 @@
+items:
+  teleport_wand:
+    material: BLAZE_ROD
+    name: "&bTeleport Wand"
+    lore:
+      - "&7Right-click to use"
+      - ""
+      - "&eA Supernova custom item"
+    amount: 1
+    custom-model-data: 1001
+    unbreakable: true
+    glow: true
+
+  starter_token:
+    material: PAPER
+    name: "&6Starter Token"
+    lore:
+      - "&7A token issued to new players"
+    amount: 1

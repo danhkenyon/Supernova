@@ -30,27 +30,8 @@ class ServerCommand : Command(
             )
         )
     )
-
 ) {
     override fun execute(sender: CommandSender, args: CommandArguments): CommandResult {
-        /*
-        sender.sendMessage(
-            MessageBuilder()
-                .append("\n<g:#000000:#ffffff><bold>---------------------------------------------</g>\n")
-                .append("<hex:#abcdef>Sending you to <white>${args.get<String>("name")}</white>!\n")
-                .append("<yellow><underline>Click here for free v-bucks!\n") {
-                    action(Action.SHOW_TEXT,
-                                "<g:#ff0000:#00ff00:#0000ff>Rainbow hover text!</g>\n" +
-                                "<bold><#ffff00>Bold yellow text</#ffff00></bold>\n" +
-                                "<italic><#ff00ff>Italic pink text</#ff00ff></italic>"
-                    )
-                    action(Action.SUGGEST_COMMAND, args.get<String>("name"))
-                }
-                .append("<g:#000000:#ffffff><bold>---------------------------------------------</g>\n")
-                .build()
-        )
-
-         */
 
         MenuManager.open(
             sender as? Player ?: throw IllegalArgumentException("Player is not an instance of server command."),
