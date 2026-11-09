@@ -6,6 +6,8 @@ import net.minepact.supernova.api.events.*
 import net.minepact.supernova.api.items.*
 import net.minepact.supernova.api.logger.Logger
 import net.minepact.supernova.api.menus.MenuManager
+import net.minepact.supernova.api.menus.MenuRenderer
+import net.minepact.supernova.api.menus.findMenus
 import net.minepact.supernova.api.message.MessageSystem
 import net.minepact.supernova.api.server.*
 import org.bukkit.plugin.java.JavaPlugin
@@ -45,15 +47,16 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         MessageSystem.initialize()
 
-        MenuManager.initialize()
-
         Logger.log("Registering commands...")
         findCommands("net.minepact.supernova").forEach { commandRegister.register(it) }
 
         Logger.log("Registering events...")
         findListeners("net.minepact.supernova").forEach { eventManager.register(it) }
 
-        Logger.log("Registering events...")
+        Logger.log("Registering menus...")
+        findMenus("net.minepact.supernova").forEach { MenuManager.register(it) }
+
+        Logger.log("Registering items...")
         findItems("net.minepact.supernova").forEach { ItemRegister.register(it) }
     }
 
@@ -66,5 +69,7 @@ class Main : JavaPlugin() {
 
         Logger.log("Unregistering events...")
         eventManager.unregisterAll()
+
+        MenuManager.shutdown()
     }
 }

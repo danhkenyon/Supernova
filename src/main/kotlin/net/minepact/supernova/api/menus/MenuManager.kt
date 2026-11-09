@@ -2,52 +2,82 @@ package net.minepact.supernova.api.menus
 
 import org.bukkit.entity.Player
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
 object MenuManager {
-    private val sessions = ConcurrentHashMap<UUID, MenuSession>()
-    private var initialized = false
+    private val menus = mutableMapOf<String, Menu>()
+    private val active = mutableMapOf<UUID, MenuContext>()
+    private val renderer = MenuRenderer()
 
-    @Synchronized
-    fun initialize() {
-        if (initialized) return
-        initialized = true
+    fun register(menu: Menu) {
+        menu.validate()
+        require(!menus.containsKey(menu.id)) { "Menu '${menu.id}' is already registered" }
+
+        menus[menu.id] = menu
+    }
+    fun unregister(id: String) {
+        menus.remove(id)
+        active.values
+            .filter { it.menu.id == id }
+            .toList()
+            .forEach { close(it.player) }
     }
 
-    fun open(player: Player, menu: Menu): MenuSession {
-        require(initialized) { "MenuManager has not been initialized" }
+    fun get(id: String): Menu? = menus[id]
+
+    fun open(player: Player, id: String) {
+        val menu = menus[id] ?: error("Menu '$id' is not registered")
+        open(player, menu)
+    }
+    fun open(player: Player, menu: Menu) {
+        menu.validate()
         close(player)
 
-        val session = MenuSession(player, menu)
-        sessions[player.uniqueId] = session
+        val context = MenuContext(player, menu)
+        active[player.uniqueId] = context
 
-        session.display()
-        menu.onOpen(session)
+        val holder = renderer.render(context)
+        player.openInventory(holder.inventory)
 
-        return session
+        context.isOpen = true
+        menu.onOpen(context)
     }
 
+    fun refresh(player: Player) {
+        val context = active[player.uniqueId] ?: return
+        if (!context.isOpen) return
+
+        val holder = renderer.render(context)
+        player.openInventory(holder.inventory)
+    }
     fun close(player: Player) {
-        val session = sessions[player.uniqueId] ?: return
+        val context = active.remove(player.uniqueId) ?: return
 
-        if (session.isOpen) player.closeInventory()
-        else removeSession(session)
-    }
+        context.isOpen = false
 
-    fun session(player: Player): MenuSession? {
-        return sessions[player.uniqueId]
-    }
-    fun hasSession(player: Player): Boolean {
-        return sessions.containsKey(player.uniqueId)
-    }
-    internal fun removeSession(session: MenuSession) {
-        if (sessions.remove(session.playerId, session)) session.menu.onClose(session)
-    }
+        context.menu.onClose(context)
+        player.closeInventory()
 
+        context.menu.onDestroy(context)
+        context.clear()
+    }
     fun shutdown() {
-        sessions.values.toList().forEach { close(it.player) }
-
-        sessions.clear()
-        initialized = false
+        active.values.toList().forEach { close(it.player) }
+        menus.clear()
     }
+
+    fun handleInventoryClose(player: Player, holder: MenuHolder) {
+        val context = active[player.uniqueId] ?: return
+
+        if (context !== holder.context) return
+
+        active.remove(player.uniqueId)
+        context.isOpen = false
+
+        context.menu.onClose(context)
+        context.menu.onDestroy(context)
+        context.clear()
+    }
+
+    fun getContext(player: Player): MenuContext? = active[player.uniqueId]
+    fun isInMenu(player: Player): Boolean = active.containsKey(player.uniqueId)
 }

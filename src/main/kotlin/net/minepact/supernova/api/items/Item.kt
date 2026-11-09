@@ -22,7 +22,7 @@ open class Item internal constructor(
     val glow: Boolean,
     val stackable: Boolean,
     val callbacks: ItemCallbacks
-) {
+) : Cloneable {
     internal fun asItemStack(): ItemStack {
         val stack = ItemStack(this.material, this.amount)
         val meta = stack.itemMeta
@@ -56,6 +56,10 @@ open class Item internal constructor(
         meta.persistentDataContainer.set(NamespacedKeys.get("item_id"), PersistentDataType.STRING, this.id)
         stack.itemMeta = meta
         return stack
+    }
+
+    public override fun clone(): Item {
+        return super.clone() as Item
     }
 }
 

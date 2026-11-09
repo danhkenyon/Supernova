@@ -5,7 +5,7 @@ flymode: false
 muted: false
 jailed: false
 ip-address: 192.168.0.103
-afk: true
+afk: false
 socialspy: false
 npc: false
 powertoolsenabled: true
@@ -17,8 +17,8 @@ timestamps:
   mute: 0
   jail: 0
   onlinejail: 0
-  logout: 1794258653902
-  login: 1794258694170
+  logout: 1794261757806
+  login: 1794261781779
 money: '0'
 last-account-name: dankenyon
 lastlocation:
@@ -35,5 +35,5 @@ logoutlocation:
   x: 126.10852645935904
   y: 173.92029508057863
   z: 86.29299347788144
-  yaw: 146.1925811767578
-  pitch: 1.6506145000457764
+  yaw: 146.3425750732422
+  pitch: -0.29938578605651855

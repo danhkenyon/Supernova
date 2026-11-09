@@ -11,7 +11,6 @@ import net.minepact.supernova.api.message.MessageBuilder
 import net.minepact.supernova.api.message.action.Action
 import net.minepact.supernova.api.message.sendMessage
 import net.minepact.supernova.api.permissions.Permission
-import net.minepact.supernova.core.hub.menus.ExampleMenu
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -51,11 +50,6 @@ class ServerCommand : Command(
         )
 
          */
-
-        MenuManager.open(
-            sender as? Player ?: throw IllegalArgumentException("Player is not an instance of server command."),
-            menu = ExampleMenu()
-        )
         return CommandResult.SUCCESS
     }
 }

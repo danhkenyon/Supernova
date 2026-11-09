@@ -3,12 +3,11 @@ package net.minepact.supernova.core.hub.items
 import net.minepact.supernova.api.items.Item
 import net.minepact.supernova.api.items.ItemCallbacks
 import net.minepact.supernova.api.menus.MenuManager
-import net.minepact.supernova.core.hub.menus.ExampleMenu
 import org.bukkit.Material
 
 class ServerSelectorItem : Item(
     id = "server-selector",
-    material = Material.COMPASS,
+    material = Material.NETHER_STAR,
     name = "<red><bold>Server Selector</bold></red>",
     lore = listOf(
         " ",
@@ -26,7 +25,7 @@ class ServerSelectorItem : Item(
         },
         onClick = { event ->
             event.isCancelled = true
-            MenuManager.open(event.player, ExampleMenu())
+            MenuManager.open(event.player, MenuManager.get("server_selector")!!)
         },
         onConsume = null,
         onLeftClick = null,
