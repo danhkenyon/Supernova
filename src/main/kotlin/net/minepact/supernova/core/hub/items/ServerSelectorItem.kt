@@ -6,7 +6,7 @@ import net.minepact.supernova.api.menus.MenuManager
 import org.bukkit.Material
 
 class ServerSelectorItem : Item(
-    id = "server-selector",
+    id = "server_selector",
     material = Material.NETHER_STAR,
     name = "<red><bold>Server Selector</bold></red>",
     lore = listOf(
@@ -22,13 +22,23 @@ class ServerSelectorItem : Item(
     callbacks = ItemCallbacks(
         onDrop = { event ->
             event.isCancelled = true
+            MenuManager.open(event.player, MenuManager.get("server_selector")!!)
         },
         onClick = { event ->
             event.isCancelled = true
             MenuManager.open(event.player, MenuManager.get("server_selector")!!)
         },
-        onConsume = null,
-        onLeftClick = null,
-        onRightClick = null,
+        onConsume = { event ->
+            event.isCancelled = true
+            MenuManager.open(event.player, MenuManager.get("server_selector")!!)
+        },
+        onLeftClick = { event ->
+            event.isCancelled = true
+            MenuManager.open(event.player, MenuManager.get("server_selector")!!)
+        },
+        onRightClick = { event ->
+            event.isCancelled = true
+            MenuManager.open(event.player, MenuManager.get("server_selector")!!)
+        },
     )
 )

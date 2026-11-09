@@ -1,0 +1,10 @@
+server:
+  name: Global1
+  type: HUB
+spawn:
+  world: world
+  x: 122.0
+  y: 165.0
+  z: 83.0
+  yaw: -0
+  pitch: 0

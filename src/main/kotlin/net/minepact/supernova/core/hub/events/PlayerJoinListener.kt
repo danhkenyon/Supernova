@@ -1,11 +1,16 @@
 package net.minepact.supernova.core.hub.events
 
+import net.kyori.adventure.text.Component
+import net.minepact.supernova.Main
 import net.minepact.supernova.api.events.EventListener
 import net.minepact.supernova.api.events.Subscribe
+import net.minepact.supernova.api.items.ItemRegister
+import net.minepact.supernova.api.message.MessageBuilder
+import net.minepact.supernova.api.message.sendMessage
 import net.minepact.supernova.api.server.ServerType
-import org.bukkit.Material
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.inventory.ItemStack
 
 class PlayerJoinListener : EventListener {
 
@@ -14,6 +19,22 @@ class PlayerJoinListener : EventListener {
         val player = event.player
         val inventory = player.inventory
 
-        inventory.setItem(4, ItemStack.of(Material.COMPASS, 1))
+        event.joinMessage(Component.text(""))
+
+        player.teleport(Location(
+            Bukkit.getWorld(Main.spawnData.world),
+            Main.spawnData.x,
+            Main.spawnData.y,
+            Main.spawnData.z,
+            Main.spawnData.yaw,
+            Main.spawnData.pitch
+        ))
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.sendMessage(MessageBuilder().append("<dark_gray>[<green><bold>+</bold></green>] <gray> ${player.name}").build())
+        }
+
+        inventory.clear()
+        inventory.setItem(4, ItemRegister.get("server_selector")!!.asItemStack())
     }
 }

@@ -16,13 +16,13 @@ class ServerSelectorMenu : Menu() {
         val player = context.player
 
         layout.set(
-            slot = 11,
-            item = ItemBuilder(Material.GRASS_BLOCK)
-                .id("grass_block")
-                .name("<g:#f59f37:#b437f5><bold>Survival</bold></g>")
+            slot = 13,
+            item = ItemBuilder(Material.SHULKER_BOX)
+                .id("box_button")
+                .name("<g:#f59f37:#b437f5><bold>Box PvP</bold></g>")
                 .build(),
             action = {
-                player.sendMessage("You selected Survival")
+                player.performCommand("server box")
             }
         )
     }
